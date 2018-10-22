@@ -1,0 +1,15 @@
+{
+    "name": "dallask/micro-framework",
+    "description": "My own cool micro-framework",
+    "type": "project",
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "license": "BSD",
+    "authors": [
+        {
+            "name": "Dallas Kassel",
+            "email": "dallask@mail.ru"
+        }
+    ]
+}
