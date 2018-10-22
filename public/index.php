@@ -6,4 +6,8 @@
  * Time: 17:57
  */
 
-echo 'Hello frame :) !';
+$name = !empty($_GET['name']) ? $_GET['name'] : '';
+
+header('X-Developer: Insane Coder');
+
+echo 'Hello ' . $name . ' :) !';
