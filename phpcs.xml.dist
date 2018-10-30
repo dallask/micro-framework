@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="Test Standard">
+    <rule ref="PSR2"/>
+    <!-- Use colors in output. -->
+    <arg name="colors"/>
+    <!-- Show progress. -->
+    <arg value="p"/>
+    <file>./public</file>
+    <file>./src</file>
+</ruleset>
