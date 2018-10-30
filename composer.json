@@ -3,7 +3,8 @@
     "description": "My own cool micro-framework",
     "type": "project",
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.1.0",
+        "roave/security-advisories": "dev-master"
     },
     "license": "BSD",
     "authors": [
