@@ -21,6 +21,11 @@
         "phpunit/php-code-coverage": "^6.1",
         "squizlabs/php_codesniffer": "^3.3"
     },
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "src/Framework/"
+        }
+    },
     "scripts": {
         "phplint": [
             "php -l public",
