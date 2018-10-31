@@ -9,15 +9,16 @@
          stopOnFailure="false">
     <testsuites>
         <testsuite name="unit" suffix=".php">
-            <directory>./test/</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
     <logging>
-        <log type="coverage-html" target="./test/codeCoverage"/>
+        <log type="coverage-html" target="./tests/codeCoverage"/>
     </logging>
     <filter>
         <whitelist>
-            <directory suffix=".php">src/</directory>
+            <directory suffix=".php">./src/</directory>
+            <directory suffix=".php">./framework/</directory>
         </whitelist>
     </filter>
     <php>
