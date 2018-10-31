@@ -28,6 +28,9 @@
         }
     },
     "scripts": {
+        "serv": [
+            "php -S 0.0.0.0:8088 -t public public/index.php"
+        ],
         "phplint": [
             "php -l public",
             "php -l src"
