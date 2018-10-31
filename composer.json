@@ -29,7 +29,10 @@
     },
     "scripts": {
         "serv": [
-            "php -S 0.0.0.0:8088 -t public public/index.php"
+            "php -S 0.0.0.0:8088 -t public"
+        ],
+        "test": [
+            "phpunit --colors=always"
         ],
         "phplint": [
             "php -l public",
