@@ -6,14 +6,12 @@
  * Time: 17:57
  */
 
-use Framework\Http\Request;
+use Framework\Http\RequestFactory;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 ### Initialization
-$request = (new Request())
-  ->withQueryParams($_GET)
-  ->withParsedBody($_POST);
+$request = RequestFactory::fromGlobals();
 ### Action
 $name = $request->getQueryParams()['name'] ?? 'Guest';
 
