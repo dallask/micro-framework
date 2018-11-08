@@ -41,6 +41,9 @@
         "phpcs": [
             "phpcs -p"
         ],
+        "phpcbf": [
+            "phpcbf"
+        ],
         "phpmd": [
             "phpmd public,src text ./phpmd.xml.dist"
         ],
