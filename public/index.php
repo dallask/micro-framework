@@ -6,17 +6,17 @@
  * Time: 17:57
  */
 
-use Framework\Http\RequestFactory;
-use Framework\Http\Response;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\ServerRequestFactory;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 ### Initialization
-$request = RequestFactory::fromGlobals();
+$request = ServerRequestFactory::fromGlobals();
 ### Action
 $name = $request->getQueryParams()['name'] ?? 'Guest';
 
-$response = (new Response('Hello, ' . $name . '!'))
+$response = (new HtmlResponse('Hello, ' . $name . '!'))
   ->withHeader('X-Developer', 'ElisDN');
 ### Sending
 header('HTTP/1.0 ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase());

@@ -4,7 +4,8 @@
     "type": "project",
     "require": {
         "php": ">=7.1.0",
-        "roave/security-advisories": "dev-master"
+        "roave/security-advisories": "dev-master",
+        "zendframework/zend-diactoros": "^2.0"
     },
     "license": "BSD",
     "authors": [
