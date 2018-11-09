@@ -19,8 +19,15 @@ $name = $request->getQueryParams()['name'] ?? 'Guest';
 $response = (new HtmlResponse('Hello, ' . $name . '!'))
   ->withHeader('X-Developer', 'ElisDN');
 ### Sending
-header('HTTP/1.0 ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase());
+header(sprintf(
+  'HTTP/%s %d %s',
+  $response->getProtocolVersion(),
+  $response->getStatusCode(),
+  $response->getReasonPhrase()
+));
 foreach ($response->getHeaders() as $name => $value) {
-    header($name . ':' . $value);
+    foreach ($value as $valueItem) {
+        header(sprintf('%s: %s', $name, $valueItem), false);
+    }
 }
 echo $response->getBody();
