@@ -6,6 +6,7 @@
  * Time: 17:57
  */
 
+use Framework\Http\ResponseSender;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -19,15 +20,5 @@ $name = $request->getQueryParams()['name'] ?? 'Guest';
 $response = (new HtmlResponse('Hello, ' . $name . '!'))
   ->withHeader('X-Developer', 'ElisDN');
 ### Sending
-header(sprintf(
-  'HTTP/%s %d %s',
-  $response->getProtocolVersion(),
-  $response->getStatusCode(),
-  $response->getReasonPhrase()
-));
-foreach ($response->getHeaders() as $name => $value) {
-    foreach ($value as $valueItem) {
-        header(sprintf('%s: %s', $name, $valueItem), false);
-    }
-}
-echo $response->getBody();
+$emitter = new ResponseSender();
+$emitter->send($response);
