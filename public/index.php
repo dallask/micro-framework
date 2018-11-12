@@ -8,9 +8,8 @@
 
 use App\Http\Action;
 use Framework\Http\ActionResolver;
+use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Framework\Http\Router\RouteCollection;
-use Framework\Http\Router\SimpleRouter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
@@ -19,17 +18,13 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 ### Initialization
-$routes = new RouteCollection();
+$aura = new Aura\Router\RouterContainer();
+$routes = $aura->getMap();
 $routes->get('home', '/', Action\HelloAction::class);
 $routes->get('about', '/about', Action\AboutAction::class);
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
-$routes->get(
-    'blog_show',
-    '/blog/{id}',
-    Action\Blog\ShowAction::class,
-    ['id' => '\d+']
-);
-$router = new SimpleRouter($routes);
+$routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
+$router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 ### Running

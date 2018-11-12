@@ -9,8 +9,8 @@
 namespace Tests\Framework\Http;
 
 use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Framework\Http\Router\RouteCollection;
-use Framework\Http\Router\SimpleRouter;
+use Framework\Http\Router\AuraRouterAdapter;
+use Aura\Router\RouterContainer;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
@@ -20,11 +20,12 @@ class RouterTest extends TestCase
 
     public function testCorrectMethod()
     {
-        $routes = new RouteCollection();
+        $aura = new RouterContainer();
+        $routes = $aura->getMap();
         $routes->get($nameGet = 'blog', '/blog', $handlerGet = 'handler_get');
         $routes->post($namePost = 'blog_edit', '/blog',
           $handlerPost = 'handler_post');
-        $router = new SimpleRouter($routes);
+        $router = new AuraRouterAdapter($aura);
         $result = $router->match($this->buildRequest('GET', '/blog'));
         self::assertEquals($nameGet, $result->getName());
         self::assertEquals($handlerGet, $result->getHandler());
@@ -35,19 +36,21 @@ class RouterTest extends TestCase
 
     public function testMissingMethod()
     {
-        $routes = new RouteCollection();
+        $aura = new RouterContainer();
+        $routes = $aura->getMap();
         $routes->post('blog', '/blog', 'handler_post');
-        $router = new SimpleRouter($routes);
+        $router = new AuraRouterAdapter($aura);
         $this->expectException(RequestNotMatchedException::class);
         $router->match($this->buildRequest('DELETE', '/blog'));
     }
 
     public function testCorrectAttributes()
     {
-        $routes = new RouteCollection();
+        $aura = new RouterContainer();
+        $routes = $aura->getMap();
         $routes->get($name = 'blog_show', '/blog/{id}', 'handler',
           ['id' => '\d+']);
-        $router = new SimpleRouter($routes);
+        $router = new AuraRouterAdapter($aura);
         $result = $router->match($this->buildRequest('GET', '/blog/5'));
         self::assertEquals($name, $result->getName());
         self::assertEquals(['id' => '5'], $result->getAttributes());
@@ -55,31 +58,33 @@ class RouterTest extends TestCase
 
     public function testIncorrectAttributes()
     {
-        $routes = new RouteCollection();
+        $aura = new RouterContainer();
+        $routes = $aura->getMap();
         $routes->get($name = 'blog_show', '/blog/{id}', 'handler',
           ['id' => '\d+']);
-        $router = new SimpleRouter($routes);
+        $router = new AuraRouterAdapter($aura);
         $this->expectException(RequestNotMatchedException::class);
         $router->match($this->buildRequest('GET', '/blog/slug'));
     }
 
     public function testGenerate()
     {
-        $routes = new RouteCollection();
+        $aura = new RouterContainer();
+        $routes = $aura->getMap();
         $routes->get('blog', '/blog', 'handler');
         $routes->get('blog_show', '/blog/{id}', 'handler', ['id' => '\d+']);
-        $router = new SimpleRouter($routes);
-        self::assertEquals('/blog', $router->generate('blog'));
+        $router = new AuraRouterAdapter($aura);
+        self::assertEquals('/blog', $router->generate('blog', ['id' => '\d+']));
         self::assertEquals('/blog/5',
           $router->generate('blog_show', ['id' => 5]));
     }
 
     public function testGenerateMissingAttributes()
     {
-        $routes = new RouteCollection();
-        $routes->get($name = 'blog_show', '/blog/{id}', 'handler',
-          ['id' => '\d+']);
-        $router = new SimpleRouter($routes);
+        $aura = new RouterContainer();
+        $routes = $aura->getMap();
+        $routes->get($name = 'blog_show', '/blog/{id}', 'handler');
+        $router = new AuraRouterAdapter($aura);
         $this->expectException(\InvalidArgumentException::class);
         $router->generate('blog_show', ['slug' => 'post']);
     }
