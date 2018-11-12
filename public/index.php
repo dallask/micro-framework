@@ -7,6 +7,7 @@
  */
 
 use App\Http\Action;
+use Framework\Http\ActionResolver;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Framework\Http\Router\RouteCollection;
 use Framework\Http\Router\Router;
@@ -29,6 +30,7 @@ $routes->get(
     ['id' => '\d+']
 );
 $router = new Router($routes);
+$resolver = new ActionResolver();
 
 ### Running
 $request = ServerRequestFactory::fromGlobals();
@@ -37,8 +39,7 @@ try {
     foreach ($result->getAttributes() as $attribute => $value) {
         $request = $request->withAttribute($attribute, $value);
     }
-    /** @var callable $action */
-    $action = is_string($handler) ? new $handler() : $handler;
+    $action = $resolver->resolve($result->getHandler());
     $response = $action($request);
 } catch (RequestNotMatchedException $e) {
     $response = new HtmlResponse('Undefined page', 404);
