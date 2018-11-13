@@ -13,7 +13,6 @@ use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -34,9 +33,7 @@ $routes->get('cabinet', '/cabinet', function (ServerRequestInterface $request) u
     $pipeline->pipe(new Middleware\ProfilerMiddleware());
     $pipeline->pipe(new Middleware\BasicAuthMiddleware($params['users']));
     $pipeline->pipe(new Action\CabinetAction());
-    return $pipeline($request, function () {
-        return new HtmlResponse('Undefined page', 404);
-    });
+    return $pipeline($request, new Middleware\NotFoundHandler());
 });
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
@@ -53,7 +50,8 @@ try {
     $action = $resolver->resolve($result->getHandler());
     $response = $action($request);
 } catch (RequestNotMatchedException $e) {
-    $response = new HtmlResponse('Undefined page', 404);
+    $handler = new Middleware\NotFoundHandler();
+    $response = $handler($request);
 }
 
 ### Postprocessing
