@@ -7,9 +7,9 @@
  * Time: 11:06
  */
 
-namespace Framework\Http;
+namespace Framework\Http\Pipeline;
 
-class ActionResolver
+class MiddlewareResolver
 {
 
     public function resolve($handler): callable
