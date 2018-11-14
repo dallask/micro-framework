@@ -36,7 +36,7 @@ $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
 $router = new AuraRouterAdapter($aura);
 $resolver = new MiddlewareResolver();
-$app = new Application($resolver);
+$app = new Application($resolver, new Middleware\NotFoundHandler());
 $app->pipe(Middleware\ProfilerMiddleware::class);
 
 ### Running
@@ -50,7 +50,7 @@ try {
     $pipeline->pipe($resolver->resolve($handler));
 } catch (RequestNotMatchedException $e) {
 }
-$response = $pipeline($request, new Middleware\NotFoundHandler());
+$response = $app->run($request);
 
 ### Postprocessing
 $response = $app->withHeader('X-Developer', 'ElisDN');
