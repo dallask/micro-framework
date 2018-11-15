@@ -22,4 +22,3 @@ class CredentialsMiddleware
         return $response->withHeader('X-Developer', 'ElisDN');
     }
 }
-
