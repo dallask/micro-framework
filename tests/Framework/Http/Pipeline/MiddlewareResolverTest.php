@@ -31,13 +31,15 @@ class MiddlewareResolverTest extends TestCase
     public function testDirect($handler): void
     {
         $resolver = new MiddlewareResolver();
-        $middleware = $resolver->resolve($handler);
+        $middleware = $resolver->resolve($handler, new Response());
+
         /** @var ResponseInterface $response */
         $response = $middleware(
           (new ServerRequest())->withAttribute('attribute', $value = 'value'),
           new Response(),
           new NotFoundMiddleware()
         );
+
         self::assertEquals([$value], $response->getHeader('X-Header'));
     }
 
@@ -49,13 +51,15 @@ class MiddlewareResolverTest extends TestCase
     public function testNext($handler): void
     {
         $resolver = new MiddlewareResolver();
-        $middleware = $resolver->resolve($handler);
+        $middleware = $resolver->resolve($handler, new Response());
+
         /** @var ResponseInterface $response */
         $response = $middleware(
           (new ServerRequest())->withAttribute('next', true),
           new Response(),
           new NotFoundMiddleware()
         );
+
         self::assertEquals(404, $response->getStatusCode());
     }
 
@@ -96,16 +100,19 @@ class MiddlewareResolverTest extends TestCase
     public function testArray(): void
     {
         $resolver = new MiddlewareResolver();
+
         $middleware = $resolver->resolve([
           new DummyMiddleware(),
           new CallableMiddleware(),
-        ]);
+        ], new Response());
+
         /** @var ResponseInterface $response */
         $response = $middleware(
           (new ServerRequest())->withAttribute('attribute', $value = 'value'),
           new Response(),
           new NotFoundMiddleware()
         );
+
         self::assertEquals(['dummy'], $response->getHeader('X-Dummy'));
         self::assertEquals([$value], $response->getHeader('X-Header'));
     }
