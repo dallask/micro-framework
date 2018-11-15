@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ievgen_Kyvgyla
- * Date: 22-Oct-18
- * Time: 17:57
- */
 
 use App\Http\Action;
 use App\Http\Middleware;
@@ -20,12 +14,14 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 ### Initialization
+
 $params = [
   'users' => ['admin' => 'password'],
 ];
 
 $aura = new Aura\Router\RouterContainer();
 $routes = $aura->getMap();
+
 $routes->get('home', '/', Action\HelloAction::class);
 $routes->get('about', '/about', Action\AboutAction::class);
 $routes->get('cabinet', '/cabinet', [
@@ -34,27 +30,29 @@ $routes->get('cabinet', '/cabinet', [
 ]);
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
+
 $router = new AuraRouterAdapter($aura);
+
 $resolver = new MiddlewareResolver();
 $app = new Application($resolver, new Middleware\NotFoundHandler());
+$app->pipe(Middleware\CredentialsMiddleware::class);
 $app->pipe(Middleware\ProfilerMiddleware::class);
 
 ### Running
+
 $request = ServerRequestFactory::fromGlobals();
 try {
     $result = $router->match($request);
     foreach ($result->getAttributes() as $attribute => $value) {
         $request = $request->withAttribute($attribute, $value);
     }
-    $handler = $result->getHandler();
-    $pipeline->pipe($resolver->resolve($handler));
+    $app->pipe($result->getHandler());
 } catch (RequestNotMatchedException $e) {
 }
+
 $response = $app->run($request);
 
-### Postprocessing
-$response = $app->withHeader('X-Developer', 'ElisDN');
-
 ### Sending
+
 $emitter = new SapiEmitter();
 $emitter->emit($response);
