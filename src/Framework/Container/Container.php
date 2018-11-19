@@ -22,21 +22,26 @@ class Container
         }
 
         if (!array_key_exists($id, $this->definitions)) {
+            if (class_exists($id)) {
+                return $this->results[$id] = new $id();
+            }
             throw new ServiceNotFoundException('Unknown service "' . $id . '"');
         }
 
         $definition = $this->definitions[$id];
+
         if ($definition instanceof \Closure) {
             $this->results[$id] = $definition($this);
         } else {
             $this->results[$id] = $definition;
         }
+
         return $this->results[$id];
     }
 
     public function has($id): bool
     {
-        return array_key_exists($id, $this->definitions);
+        return array_key_exists($id, $this->definitions) || class_exists($id);
     }
 
     public function set($id, $value): void
