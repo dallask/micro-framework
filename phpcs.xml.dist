@@ -7,4 +7,5 @@
     <arg value="p"/>
     <file>./public</file>
     <file>./src</file>
+    <file>./config</file>
 </ruleset>
