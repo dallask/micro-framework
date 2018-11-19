@@ -9,6 +9,7 @@
 
 namespace Framework\Http\Pipeline;
 
+use Framework\Container\Container;
 use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,22 +18,38 @@ use Zend\Stratigility\MiddlewarePipe;
 class MiddlewareResolver
 {
 
-    public function resolve($handler, ResponseInterface $responsePrototype): callable
+    private $container;
+
+    public function __construct(Container $container)
     {
+        $this->container = $container;
+    }
+
+    public function resolve(
+        $handler,
+        ResponseInterface $responsePrototype
+    ): callable {
         if (\is_array($handler)) {
             return $this->createPipe($handler, $responsePrototype);
         }
 
-        if (\is_string($handler)) {
+        if (\is_string($handler) && $this->container->has($handler)) {
             return function (
                 ServerRequestInterface $request,
                 ResponseInterface $response,
                 callable $next
-            ) use ($handler) {
-                $middleware = $this->resolve(new $handler(), $response);
+            ) use (
+                $handler,
+                $responsePrototype
+) {
+                $middleware = $this->resolve(
+                    $this->container->get($handler),
+                    $responsePrototype
+                );
                 return $middleware($request, $response, $next);
             };
         }
+
         if ($handler instanceof MiddlewareInterface) {
             return function (
                 ServerRequestInterface $request,
@@ -45,6 +62,7 @@ class MiddlewareResolver
                 );
             };
         }
+
         if (\is_object($handler)) {
             $reflection = new \ReflectionObject($handler);
             if ($reflection->hasMethod('__invoke')) {
@@ -62,11 +80,14 @@ class MiddlewareResolver
                 return $handler;
             }
         }
+
         throw new UnknownMiddlewareTypeException($handler);
     }
 
-    private function createPipe(array $handlers, $responsePrototype): MiddlewarePipe
-    {
+    private function createPipe(
+        array $handlers,
+        $responsePrototype
+    ): MiddlewarePipe {
         $pipeline = new MiddlewarePipe();
         $pipeline->setResponsePrototype($responsePrototype);
         foreach ($handlers as $handler) {
