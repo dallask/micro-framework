@@ -8,6 +8,8 @@
 
 namespace Framework\Container;
 
+use Psr\Container\ContainerInterface;
+
 class Container implements ContainerInterface
 {
 
