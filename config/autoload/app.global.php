@@ -5,6 +5,7 @@ use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
+use Framework\Template\PhpRenderer;
 use Framework\Template\TemplateRenderer;
 use Psr\Container\ContainerInterface;
 
@@ -37,7 +38,7 @@ return [
                 );
             },
             TemplateRenderer::class => function () {
-                return new TemplateRenderer('templates');
+                return new PhpRenderer('templates');
             },
         ],
     ],
