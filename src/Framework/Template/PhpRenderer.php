@@ -28,12 +28,7 @@ class PhpRenderer implements TemplateRenderer
             return $content;
         }
 
-        return $this->render(
-            $this->extend,
-            [
-            'content' => $content,
-            ]
-        );
+        return $this->render($this->extend);
     }
 
     public function extend($view): void
