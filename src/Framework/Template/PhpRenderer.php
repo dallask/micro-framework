@@ -33,4 +33,9 @@ class PhpRenderer implements TemplateRenderer
             ]
         );
     }
+
+    public function extend($view): void
+    {
+        $this->extend = $view;
+    }
 }
