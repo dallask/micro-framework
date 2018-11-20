@@ -7,10 +7,13 @@ class PhpRenderer implements TemplateRenderer
     private $path;
     private $extend;
     private $params = [];
+    private $blocks = [];
+    private $blockNames;
 
     public function __construct($path)
     {
         $this->path = $path;
+        $this->blockNames = new \SplStack();
     }
 
     public function render($name, array $params = []): string
@@ -29,7 +32,7 @@ class PhpRenderer implements TemplateRenderer
         return $this->render(
             $this->extend,
             [
-                'content' => $content,
+            'content' => $content,
             ]
         );
     }
@@ -37,5 +40,22 @@ class PhpRenderer implements TemplateRenderer
     public function extend($view): void
     {
         $this->extend = $view;
+    }
+
+    public function beginBlock($name): void
+    {
+        $this->blockNames->push($name);
+        ob_start();
+    }
+
+    public function endBlock(): void
+    {
+        $name = $this->blockNames->pop();
+        $this->blocks[$name] = ob_get_clean();
+    }
+
+    public function renderBlock($name): string
+    {
+        return $this->blocks[$name] ?? '';
     }
 }
