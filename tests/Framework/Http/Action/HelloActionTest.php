@@ -10,13 +10,11 @@
 namespace Tests\App\Http\Action;
 
 use App\Http\Action\HelloAction;
-use PHPUnit\Framework\TestCase;
-use Zend\Diactoros\ServerRequest;
 use Framework\Template\TemplateRenderer;
+use PHPUnit\Framework\TestCase;
 
 class HelloActionTest extends TestCase
 {
-
     private $renderer;
 
     protected function setUp(): void
@@ -25,22 +23,13 @@ class HelloActionTest extends TestCase
         $this->renderer = new TemplateRenderer('templates');
     }
 
-    public function testGuest()
+    public function test()
     {
         $action = new HelloAction($this->renderer);
-        $request = new ServerRequest();
-        $response = $action($request);
-        self::assertEquals(200, $response->getStatusCode());
-        self::assertContains('Hello, Guest!',
-          $response->getBody()->getContents());
-    }
+        $response = $action();
 
-    public function testJohn()
-    {
-        $action = new HelloAction($this->renderer);
-        $request = (new ServerRequest())
-          ->withQueryParams(['name' => 'John']);
-        $response = $action($request);
-        self::assertContains('Hello, John!', $response->getBody()->getContents());
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertContains('Hello!', $response->getBody()->getContents());
     }
 }
+

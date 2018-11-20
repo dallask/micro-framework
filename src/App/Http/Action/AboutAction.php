@@ -9,12 +9,19 @@
 namespace App\Http\Action;
 
 use Zend\Diactoros\Response\HtmlResponse;
+use Framework\Template\TemplateRenderer;
 
 class AboutAction
 {
+    private $template;
+
+    public function __construct(TemplateRenderer $template)
+    {
+        $this->template = $template;
+    }
 
     public function __invoke()
     {
-        return new HtmlResponse('I am a simple site');
+        return new HtmlResponse($this->template->render('about'));
     }
 }
