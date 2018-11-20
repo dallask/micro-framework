@@ -28,7 +28,7 @@ class HelloAction
         $name = $request->getQueryParams()['name'] ?? 'Guest';
         return new HtmlResponse(
             $this->template->render(
-                'hello',
+                'app/hello',
                 [
                     'name' => $name,
                 ]

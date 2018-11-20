@@ -29,7 +29,7 @@ class CabinetAction
 
         return new HtmlResponse(
             $this->template->render(
-                'cabinet',
+                'app/cabinet',
                 [
                     'name' => $username
                 ]
