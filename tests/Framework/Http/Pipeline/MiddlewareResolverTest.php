@@ -23,10 +23,8 @@ use Zend\Diactoros\ServerRequest;
 
 class MiddlewareResolverTest extends TestCase
 {
-
     /**
      * @dataProvider getValidHandlers
-     *
      * @param $handler
      */
     public function testDirect($handler): void
@@ -36,9 +34,9 @@ class MiddlewareResolverTest extends TestCase
 
         /** @var ResponseInterface $response */
         $response = $middleware(
-          (new ServerRequest())->withAttribute('attribute', $value = 'value'),
-          new Response(),
-          new NotFoundMiddleware()
+            (new ServerRequest())->withAttribute('attribute', $value = 'value'),
+            new Response(),
+            new NotFoundMiddleware()
         );
 
         self::assertEquals([$value], $response->getHeader('X-Header'));
@@ -46,7 +44,6 @@ class MiddlewareResolverTest extends TestCase
 
     /**
      * @dataProvider getValidHandlers
-     *
      * @param $handler
      */
     public function testNext($handler): void
@@ -56,9 +53,9 @@ class MiddlewareResolverTest extends TestCase
 
         /** @var ResponseInterface $response */
         $response = $middleware(
-          (new ServerRequest())->withAttribute('next', true),
-          new Response(),
-          new NotFoundMiddleware()
+            (new ServerRequest())->withAttribute('next', true),
+            new Response(),
+            new NotFoundMiddleware()
         );
 
         self::assertEquals(404, $response->getStatusCode());
@@ -67,34 +64,26 @@ class MiddlewareResolverTest extends TestCase
     public function getValidHandlers(): array
     {
         return [
-          'Callable Callback' => [
-            function (ServerRequestInterface $request, callable $next) {
+            'SinglePass Callback' => [function (ServerRequestInterface $request, callable $next) {
                 if ($request->getAttribute('next')) {
                     return $next($request);
                 }
                 return (new HtmlResponse(''))
-                  ->withHeader('X-Header', $request->getAttribute('attribute'));
-            },
-          ],
-          'Callable Class' => [CallableMiddleware::class],
-          'Callable Object' => [new CallableMiddleware()],
-          'DoublePass Callback' => [
-            function (
-              ServerRequestInterface $request,
-              ResponseInterface $response,
-              callable $next
-            ) {
+                    ->withHeader('X-Header', $request->getAttribute('attribute'));
+            }],
+            'SinglePass Class' => [SinglePassMiddleware::class],
+            'SinglePass Object' => [new SinglePassMiddleware()],
+            'DoublePass Callback' => [function (ServerRequestInterface $request, ResponseInterface $response, callable $next) {
                 if ($request->getAttribute('next')) {
                     return $next($request);
                 }
                 return $response
-                  ->withHeader('X-Header', $request->getAttribute('attribute'));
-            },
-          ],
-          'DoublePass Class' => [DoublePassMiddleware::class],
-          'DoublePass Object' => [new DoublePassMiddleware()],
-          'Interop Class' => [InteropMiddleware::class],
-          'Interop Object' => [new InteropMiddleware()],
+                    ->withHeader('X-Header', $request->getAttribute('attribute'));
+            }],
+            'DoublePass Class' => [DoublePassMiddleware::class],
+            'DoublePass Object' => [new DoublePassMiddleware()],
+            'Interop Class' => [InteropMiddleware::class],
+            'Interop Object' => [new InteropMiddleware()],
         ];
     }
 
@@ -103,15 +92,15 @@ class MiddlewareResolverTest extends TestCase
         $resolver = new MiddlewareResolver(new DummyContainer());
 
         $middleware = $resolver->resolve([
-          new DummyMiddleware(),
-          new CallableMiddleware(),
+            new DummyMiddleware(),
+            new SinglePassMiddleware()
         ], new Response());
 
         /** @var ResponseInterface $response */
         $response = $middleware(
-          (new ServerRequest())->withAttribute('attribute', $value = 'value'),
-          new Response(),
-          new NotFoundMiddleware()
+            (new ServerRequest())->withAttribute('attribute', $value = 'value'),
+            new Response(),
+            new NotFoundMiddleware()
         );
 
         self::assertEquals(['dummy'], $response->getHeader('X-Dummy'));
@@ -119,55 +108,44 @@ class MiddlewareResolverTest extends TestCase
     }
 }
 
-class CallableMiddleware
+class SinglePassMiddleware
 {
-
-    public function __invoke(
-      ServerRequestInterface $request,
-      callable $next
-    ): ResponseInterface {
+    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
+    {
         if ($request->getAttribute('next')) {
             return $next($request);
         }
         return (new HtmlResponse(''))
-          ->withHeader('X-Header', $request->getAttribute('attribute'));
+            ->withHeader('X-Header', $request->getAttribute('attribute'));
     }
 }
 
 class DoublePassMiddleware
 {
-
-    public function __invoke(
-      ServerRequestInterface $request,
-      ResponseInterface $response,
-      callable $next
-    ) {
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
         if ($request->getAttribute('next')) {
             return $next($request);
         }
         return $response
-          ->withHeader('X-Header', $request->getAttribute('attribute'));
+            ->withHeader('X-Header', $request->getAttribute('attribute'));
     }
 }
 
 class InteropMiddleware implements MiddlewareInterface
 {
-
-    public function process(
-      ServerRequestInterface $request,
-      RequestHandlerInterface $handler
-    ) {
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    {
         if ($request->getAttribute('next')) {
             return $handler->handle($request);
         }
         return (new HtmlResponse(''))
-          ->withHeader('X-Header', $request->getAttribute('attribute'));
+            ->withHeader('X-Header', $request->getAttribute('attribute'));
     }
 }
 
 class NotFoundMiddleware
 {
-
     public function __invoke(ServerRequestInterface $request)
     {
         return new EmptyResponse(404);
@@ -176,12 +154,9 @@ class NotFoundMiddleware
 
 class DummyMiddleware
 {
-
-    public function __invoke(
-      ServerRequestInterface $request,
-      callable $next
-    ): ResponseInterface {
+    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
+    {
         return $next($request)
-          ->withHeader('X-Dummy', 'dummy');
+            ->withHeader('X-Dummy', 'dummy');
     }
 }
