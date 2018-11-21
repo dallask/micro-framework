@@ -7,7 +7,6 @@
         "aura/router": "^3.1",
         "http-interop/http-middleware": "^0.5.0",
         "psr/container": "^1.0",
-        "roave/security-advisories": "dev-master",
         "twig/twig": "^2.4",
         "zendframework/zend-config-aggregator": "^1.0",
         "zendframework/zend-diactoros": "^1.7",
@@ -29,6 +28,7 @@
         "phpmd/phpmd": "^2.6",
         "sebastian/phpcpd": "^4.1",
         "phpunit/phpunit": "^7.4",
+        "roave/security-advisories": "dev-master",
         "phpunit/php-code-coverage": "^6.1",
         "squizlabs/php_codesniffer": "^3.3"
     },
