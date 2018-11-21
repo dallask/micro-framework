@@ -19,7 +19,7 @@ return [
                 return new Application(
                     $container->get(MiddlewareResolver::class),
                     $container->get(Router::class),
-                    new Middleware\NotFoundHandler(),
+                    $container->get(Middleware\NotFoundHandler::class),
                     new Zend\Diactoros\Response()
                 );
             },
@@ -34,7 +34,8 @@ return [
                 ContainerInterface $container
             ) {
                 return new Middleware\ErrorHandlerMiddleware(
-                    $container->get('config')['debug']
+                    $container->get('config')['debug'],
+                    $container->get(TemplateRenderer::class)
                 );
             },
             TemplateRenderer::class => function (ContainerInterface $container
