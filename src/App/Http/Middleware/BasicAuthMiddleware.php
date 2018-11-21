@@ -38,7 +38,7 @@ class BasicAuthMiddleware
                     return $next($request->withAttribute(
                         self::ATTRIBUTE,
                         $name
-                    ));
+                    ), $response);
                 }
             }
         }
