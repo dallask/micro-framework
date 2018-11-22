@@ -3,6 +3,7 @@
 use App\Http\Middleware;
 use App\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
 use Framework\Http\Application;
+use App\Http\Middleware\ErrorHandler\DebugErrorResponseGenerator;
 use App\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
 use App\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
 use Framework\Http\Pipeline\MiddlewareResolver;
@@ -38,13 +39,11 @@ return [
             ErrorResponseGenerator::class => function (ContainerInterface $container) {
                 return new PrettyErrorResponseGenerator(
                     $container->get(TemplateRenderer::class),
-                    $container->get('config')['debug']
-                        ? ['error' => 'error/error-debug']
-                        : [
+                    [
                         '403' => 'error/403',
                         '404' => 'error/404',
                         'error' => 'error/error',
-                        ]
+                    ]
                 );
             },
         ],
