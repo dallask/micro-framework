@@ -37,8 +37,16 @@ return [
                 );
             },
             ErrorResponseGenerator::class => function (ContainerInterface $container) {
+                if ($container->get('config')['debug']) {
+                    return new DebugErrorResponseGenerator(
+                        $container->get(TemplateRenderer::class),
+                        new Zend\Diactoros\Response(),
+                        'error/error-debug'
+                    );
+                }
                 return new PrettyErrorResponseGenerator(
                     $container->get(TemplateRenderer::class),
+                    new Zend\Diactoros\Response(),
                     [
                         '403' => 'error/403',
                         '404' => 'error/404',
