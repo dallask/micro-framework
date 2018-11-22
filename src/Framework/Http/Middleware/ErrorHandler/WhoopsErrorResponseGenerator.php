@@ -7,7 +7,7 @@
  * Time: 12:39
  */
 
-namespace App\Http\Middleware\ErrorHandler;
+namespace Framework\Http\Middleware\ErrorHandler;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

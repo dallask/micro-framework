@@ -7,8 +7,9 @@
  * Time: 15:46
  */
 
-namespace App\Http\Middleware\ErrorHandler;
+namespace Infrastructure\Framework\Http\Middleware\ErrorHandler;
 
+use Framework\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
 use Framework\Template\TemplateRenderer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
