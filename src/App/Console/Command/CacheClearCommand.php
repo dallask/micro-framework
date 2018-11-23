@@ -11,6 +11,7 @@ namespace App\Console\Command;
 
 use App\Service\FileManager;
 use Framework\Console\Command;
+use Framework\Console\Helper\Question;
 use Framework\Console\Input;
 use Framework\Console\Output;
 
@@ -40,7 +41,7 @@ class CacheClearCommand extends Command
         $alias = $input->getArgument(1);
 
         if (empty($alias)) {
-            $alias = $input->choose('Choose path', array_merge(['all'], array_keys($this->paths)));
+            $alias = Question::choose($input, $output, 'Choose path', array_merge(['all'], array_keys($this->paths)));
         }
 
         if ($alias === 'all') {
