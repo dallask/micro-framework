@@ -10,10 +10,11 @@
 namespace App\Console\Command;
 
 use App\Service\FileManager;
+use Framework\Console\Command;
 use Framework\Console\Input;
 use Framework\Console\Output;
 
-class CacheClearCommand
+class CacheClearCommand implements Command
 {
     private $paths;
     private $files;
@@ -28,7 +29,7 @@ class CacheClearCommand
     {
         $output->writeln('<comment>Clearing cache</comment>');
 
-        $alias = $input->getArgument(0);
+        $alias = $input->getArgument(1);
 
         if (empty($alias)) {
             $alias = $input->choose('Choose path', array_merge(['all'], array_keys($this->paths)));
