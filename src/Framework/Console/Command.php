@@ -7,8 +7,6 @@
  * Time: 10:31
  */
 
-declare(strict_types=1);
-
 namespace Framework\Console;
 
 abstract class Command
