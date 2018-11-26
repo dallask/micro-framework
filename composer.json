@@ -10,7 +10,6 @@
         "psr/container": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "psr/log": "^1.0",
-        "robmorgan/phinx": "^0.10.6",
         "symfony/console": "^4.1",
         "twig/twig": "^2.4",
         "zendframework/zend-config-aggregator": "^1.0",
@@ -30,7 +29,6 @@
     ],
     "require-dev": {
         "filp/whoops": "^2.2",
-        "fzaninotto/faker": "^1.8",
         "phploc/phploc": "^4.0",
         "phpmd/phpmd": "^2.6",
         "phpunit/php-code-coverage": "^6.1",
@@ -81,7 +79,6 @@
             "@phpcpd"
         ],
         "app": "php bin/app.php --ansi",
-        "migration": "phinx --ansi",
         "development-enable": "ln -sr config/autoload/development.local.php.dist config/autoload/development.local.php",
         "development-disable": "rm config/autoload/development.local.php"
     }
