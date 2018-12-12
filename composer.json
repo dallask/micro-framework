@@ -80,6 +80,7 @@
             "@phpcpd"
         ],
         "app": "php bin/app.php --ansi",
+        "doctrine": "doctrine --ansi",
         "development-enable": "ln -sr config/autoload/development.local.php.dist config/autoload/development.local.php",
         "development-disable": "rm config/autoload/development.local.php"
     }
