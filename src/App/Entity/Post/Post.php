@@ -123,8 +123,4 @@ class Post
         return $this->comments->toArray();
     }
 
-    public function getCommentsCount(): int
-    {
-        return $this->comments->count();
-    }
 }
